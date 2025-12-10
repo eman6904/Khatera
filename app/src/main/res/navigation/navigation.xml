@@ -8,23 +8,26 @@
 
     <fragment
         android:id="@+id/displayNote2"
-        android:name="com.example.firebaseapp.myPackages.userInterface.DisplayNote"
+        android:name="com.example.firebaseapp.myPackages.ui.xml.fragments.Note"
         android:label="DisplayNote" />
     <fragment
         android:id="@+id/dealingWithNote"
-        android:name="com.example.firebaseapp.myPackages.userInterface.DealingWithNote"
+        android:name="com.example.firebaseapp.myPackages.ui.xml.fragments.Home"
         android:label="dealing_with_note"
-        tools:layout="@layout/dealing_with_note" >
+        tools:layout="@layout/home_fragment" >
         <action
             android:id="@+id/action_dealingWithNote_to_displayNote2"
             app:destination="@id/displayNote2" />
         <action
             android:id="@+id/action_dealingWithNote_to_noteFace"
             app:destination="@id/noteFace" />
+        <action
+            android:id="@+id/action_dealingWithNote_to_composeHostFragment"
+            app:destination="@id/composeHostFragment" />
     </fragment>
     <fragment
         android:id="@+id/noteFace"
-        android:name="com.example.firebaseapp.myPackages.userInterface.NoteFace"
+        android:name="com.example.firebaseapp.myPackages.ui.xml.fragments.Intro"
         android:label="fragment_note_face"
         tools:layout="@layout/fragment_note_face" >
         <action
@@ -36,7 +39,7 @@
     </fragment>
     <fragment
         android:id="@+id/signUp"
-        android:name="com.example.firebaseapp.myPackages.userInterface.SignUp"
+        android:name="com.example.firebaseapp.myPackages.ui.xml.fragments.SignUp"
         android:label="fragment_sign_up"
         tools:layout="@layout/fragment_sign_up" >
         <action
@@ -48,11 +51,15 @@
     </fragment>
     <fragment
         android:id="@+id/signIn"
-        android:name="com.example.firebaseapp.myPackages.userInterface.SignIn"
+        android:name="com.example.firebaseapp.myPackages.ui.xml.fragments.SignIn"
         android:label="fragment_sign_in"
         tools:layout="@layout/fragment_sign_in" >
         <action
             android:id="@+id/action_signIn_to_dealingWithNote"
             app:destination="@id/dealingWithNote" />
     </fragment>
+    <fragment
+        android:id="@+id/composeHostFragment"
+        android:name="com.example.firebaseapp.myPackages.ui.xml.fragments.ComposeHostFragment"
+        android:label="ComposeHostFragment" />
 </navigation>

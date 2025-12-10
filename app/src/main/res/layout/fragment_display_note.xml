@@ -21,22 +21,27 @@
             android:layout_height="@dimen/_200sdp"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/image4" />
-
-        <ImageView
-            android:id="@+id/zoom_out"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="300dp"
-            android:layout_marginTop="@dimen/_15sdp"
-            app:srcCompat="@drawable/ic_zoom_out" />
+            android:gravity="end"
+            >
+            <ImageView
+                android:id="@+id/zoom_out"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:padding="@dimen/_5sdp"
+                app:srcCompat="@drawable/ic_zoom_out" />
 
-        <ImageView
-            android:id="@+id/zoom_in"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="350dp"
-            android:layout_marginTop="@dimen/_15sdp"
-            app:srcCompat="@drawable/ic_zoom_in" />
+            <ImageView
+                android:id="@+id/zoom_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                app:srcCompat="@drawable/ic_zoom_in" />
+        </LinearLayout>
     </FrameLayout>
     <TextView
         android:id="@+id/title"
