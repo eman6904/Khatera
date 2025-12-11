@@ -3,6 +3,7 @@ package com.example.firebaseapp.myPackages
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.firebaseapp.databinding.ActivityMainBinding
+import com.example.firebaseapp.myPackages.data.firebase.fcm.subscribeToTopic
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -10,5 +11,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        subscribeToTopic()
+
     }
 }

@@ -7,9 +7,14 @@ class NoteContent{
     var date:String?=null
     var email:String?=null
     var password:String?=null
-   constructor(){
-
-   }
+   constructor(){}
+    constructor(  id:String,title:String, note:String, date: String)
+    {
+        this.id=id
+        this.title=title
+        this.note=note
+        this.date=date
+    }
     constructor(  id:String,title:String, note:String, date: String,email:String,password:String)
     {
         this.id=id

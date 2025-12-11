@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.firebaseapp">
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -13,6 +14,38 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FirebaseApp"
         tools:targetApi="31">
+        <!--
+    Default notification settings:
+    These values are used ONLY when an incoming FCM notification
+    does NOT specify its own notification channel, icon, or color.
+    - default_notification_icon   → used if no icon is provided
+    - default_notification_color  → used if no color is provided
+    - default_notification_channel_id → used if no channel is provided
+    -->
+
+        <!-- Default Notification Icon -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/notephoto" />
+
+        <!-- Default Notification Color -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/appColor" />
+
+        <!-- Default Notification Channel ID -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
+
+        <!-- Service for FCM -->
+        <service
+            android:name="com.example.firebaseapp.myPackages.data.firebase.fcm.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
         <activity
             android:name=".myPackages.MainActivity"
             android:exported="true" >
