@@ -19,6 +19,17 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    packaging {
+        resources {
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/NOTICE.txt"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -97,6 +108,17 @@ dependencies {
 
     //----------------------HAWK---------------------------
     implementation 'com.orhanobut:hawk:2.0.1'
+
+    //------------------LOTTIE FILE-------------------------
+    implementation("com.airbnb.android:lottie-compose:6.4.0")
+
+    //------------------------COIL---------------------
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+    implementation 'com.google.auth:google-auth-library-oauth2-http:1.23.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+
 
 
 }

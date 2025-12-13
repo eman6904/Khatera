@@ -2,6 +2,7 @@ package com.example.firebaseapp.myPackages.ui.xml.fragments
 
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -34,6 +35,8 @@ class SignIn : Fragment(R.layout.fragment_sign_in) {
         {
           signIn()
         }
+
+        activity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
     }
 
     //***************************************************************************************

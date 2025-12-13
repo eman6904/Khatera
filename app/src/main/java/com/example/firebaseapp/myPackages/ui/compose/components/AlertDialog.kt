@@ -10,6 +10,7 @@ import com.example.firebaseapp.R
 
 @Composable
 fun AlertDialog(
+    isLoading:Boolean = false,
     title:String,
     body:String,
     confirmText:String,
@@ -17,19 +18,24 @@ fun AlertDialog(
     onCancelClick:()->Unit
 ){
     AlertDialog(
-        onDismissRequest = {
-            onCancelClick()
-        },
+        onDismissRequest = {},
         title = { Text(title) },
         text = { Text(body) },
         confirmButton = {
             TextButton(onClick = {
                 onConfirmClick()
             }) {
-                Text(
-                    text = confirmText,
-                    color = Color(0xFF558B2F)
+                if(isLoading)
+                {
+                    LoadingView()
+
+                }else{
+
+                    Text(
+                        text = confirmText,
+                        color = Color(0xFF558B2F)
                     )
+                }
             }
         },
         dismissButton = {

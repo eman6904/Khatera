@@ -3,6 +3,7 @@ package com.example.firebaseapp.myPackages.utils
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
+
 //to calculate current date
 fun getCurrentDate(): String {
     val calender = Calendar.getInstance()

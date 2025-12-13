@@ -14,8 +14,8 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class AuthRepoImpl(val context: Context) : AuthRepo {
-    var authRef: FirebaseAuth? = null
-    var userRef: DatabaseReference? = null
+    private var authRef: FirebaseAuth? = null
+    private var userRef: DatabaseReference? = null
 
     init {
         var database = Firebase.database

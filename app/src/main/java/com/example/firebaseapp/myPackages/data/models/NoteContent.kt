@@ -7,7 +7,14 @@ class NoteContent{
     var date:String? = null
     var user:User? = null
    constructor(){}
-    constructor(  id:String,title:String, note:String, date: String,user:User)
+    constructor(title:String, note:String, date: String,user:User)
+    {
+        this.title = title
+        this.note = note
+        this.date = date
+        this.user = user
+    }
+    constructor(id:String,title:String, note:String, date: String,user:User)
     {
         this.id = id
         this.title = title
