@@ -10,15 +10,16 @@ import androidx.navigation.Navigation
 import com.example.firebaseapp.R
 import com.example.firebaseapp.databinding.FragmentSignUpBinding
 import com.example.firebaseapp.myPackages.MainActivity
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
+import com.example.firebaseapp.myPackages.data.remote.firebase.auth.repo.AuthRepo
+import com.example.firebaseapp.myPackages.data.remote.firebase.auth.repoImp.AuthRepoImpl
+import com.example.firebaseapp.myPackages.data.models.User
+import com.example.firebaseapp.myPackages.utils.getCurrentDate
 
 class SignUp : Fragment(R.layout.fragment_sign_up) {
     private lateinit var binding: FragmentSignUpBinding
     private lateinit var navController: NavController
-    var Auth: FirebaseAuth? = null
+    var authRepo: AuthRepo? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSignUpBinding.bind(view)
@@ -27,68 +28,68 @@ class SignUp : Fragment(R.layout.fragment_sign_up) {
         val activity = activity as MainActivity
         activity.supportActionBar?.hide()
 
-        //to create object
-        Auth = FirebaseAuth.getInstance()
-        //to sign up
-        binding.register.setOnClickListener() {
+        authRepo = AuthRepoImpl(requireContext())
+
+        binding.register.setOnClickListener {
+
             signUp()
-        }
-    }
-    //******************************************************************************
-    private fun signUp() {
-        //for register with email and password
-        if (binding.email.text.isNotEmpty() && binding.password.text.isNotEmpty()) {
-            binding.emailrequired.isVisible = false
-            binding.passwordrequired.isVisible = false
-            binding.progressBarSignup.isVisible = true
-            Auth?.createUserWithEmailAndPassword(
-                binding.email.text.toString(),
-                binding.password.text.toString()
-            )
-                ?.addOnCompleteListener(object : OnCompleteListener<AuthResult> {
-                    override fun onComplete(p0: Task<AuthResult>) {
-                        if (p0.isSuccessful) {
-                            //email and password are written correctly
-                            sendEmailVerification()
-                            binding.progressBarSignup.isVisible = false
-                        } else {
-                           // email or password is not written correctly
-                            Toast.makeText(
-                                requireContext(),
-                                p0.exception.toString(),
-                                Toast.LENGTH_LONG
-                            ).show()
-                            binding.progressBarSignup.isVisible = false
-                        }
-                    }
-                })
-        } else {
-            if (binding.email.text.isEmpty())
-                binding.emailrequired.isVisible = true
-            if (binding.password.text.isEmpty())
-                binding.passwordrequired.isVisible = true
         }
     }
 
     //******************************************************************************
-    private fun sendEmailVerification() {
-        //send message to verify email
-        Auth?.currentUser?.sendEmailVerification()?.addOnCompleteListener {
-            if (it.isSuccessful) {
-                //Message has been sent successfully
-                Toast.makeText(requireContext(), "Successful", Toast.LENGTH_LONG)
-                    .show()
-                //move to login page to verify email
-                navController.navigate(R.id.action_signUp_to_signIn)
-            } else {
-                //there is problem in sending
-                Toast.makeText(
-                    requireContext(),
-                    it.exception.toString(),
-                    Toast.LENGTH_LONG
-                ).show()
-                binding.progressBarSignup.isVisible = false
+    //for register with email and password
+
+    private fun signUp() {
+        if (NoFieldEmpty()) {
+            VisibilityHandling(true)
+            binding.register.isVisible = false
+            authRepo?.let {
+                it.signUp(
+                    User(
+                        email = binding.email.text.toString(),
+                        password = binding.password.text.toString(),
+                        userName = binding.userName.text.toString(),
+                        joinDate = getCurrentDate()
+                    ),
+                    onSuccess = {
+                        binding.progressBarSignup.isVisible = false
+                        navController.navigate(R.id.action_signUp_to_signIn)
+
+                    },
+                    onFailer = {
+                        binding.progressBarSignup.isVisible = false
+                        binding.register.isVisible = true
+                        Toast.makeText(
+                            requireContext(),
+                            it, Toast.LENGTH_LONG
+                        ).show()
+                    }
+                )
             }
+        } else {
+            VisibilityHandling(false)
         }
     }
+
+    private fun NoFieldEmpty(): Boolean {
+        return (binding.email.text.isNotEmpty() &&
+                binding.password.text.isNotEmpty() &&
+                binding.userName.text.isNotEmpty())
+    }
+
+    private fun VisibilityHandling(
+        ok: Boolean
+    ) {
+        if (ok) {
+            binding.emailrequired.isVisible = false
+            binding.passwordrequired.isVisible = false
+            binding.nameRequired.isVisible = false
+            binding.progressBarSignup.isVisible = true
+        } else {
+            binding.emailrequired.isVisible = binding.email.text.isEmpty()
+            binding.passwordrequired.isVisible = binding.password.text.isEmpty()
+            binding.nameRequired.isVisible = binding.userName.text.isEmpty()
+        }
+    }
+
 }

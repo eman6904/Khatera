@@ -1,4 +1,4 @@
-package com.example.firebaseapp.myPackages.ui.compose.component
+package com.example.firebaseapp.myPackages.ui.compose.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding

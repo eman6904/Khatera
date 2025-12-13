@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
+        android:name=".myPackages.MyApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -40,12 +41,14 @@
 
         <!-- Service for FCM -->
         <service
-            android:name="com.example.firebaseapp.myPackages.data.firebase.fcm.MyFirebaseMessagingService"
+            android:name="com.example.firebaseapp.myPackages.data.remote.firebase.fcm.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+
         <activity
             android:name=".myPackages.MainActivity"
             android:exported="true" >
@@ -55,6 +58,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+
+    </application>
 </manifest>

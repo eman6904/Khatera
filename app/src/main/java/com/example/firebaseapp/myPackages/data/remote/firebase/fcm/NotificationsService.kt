@@ -1,4 +1,4 @@
-package com.example.firebaseapp.myPackages.data.firebase.fcm
+package com.example.firebaseapp.myPackages.data.remote.firebase.fcm
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -23,12 +23,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         if (remoteMessage.data.isNotEmpty()) {
-            val note = NoteContent(
-                id = remoteMessage.data["id"]?:"0",
-                title = remoteMessage.data["title"] ?: "No title",
-                note = remoteMessage.data["content"] ?: "No content",
-                date = remoteMessage.data["date"] ?: "Unknown"
-            )
+//            val note = NoteContent(
+//                id = remoteMessage.data["id"]?:"0",
+//                title = remoteMessage.data["title"] ?: "No title",
+//                note = remoteMessage.data["content"] ?: "No content",
+//                date = remoteMessage.data["date"] ?: "Unknown"
+//            )
         }
     }
     // Function to create and show a simple notification in the Status Bar
@@ -50,7 +50,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         channelName: String = "General Notification"
     ) {
         //val manager = getSystemService(NotificationManager::class.java)
-        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,

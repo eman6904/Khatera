@@ -11,15 +11,15 @@ import androidx.navigation.Navigation
 import com.example.firebaseapp.R
 import com.example.firebaseapp.databinding.FragmentSignInBinding
 import com.example.firebaseapp.myPackages.MainActivity
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
+import com.example.firebaseapp.myPackages.data.local.UserData.Companion.saveUser
+import com.example.firebaseapp.myPackages.data.remote.firebase.auth.repo.AuthRepo
+import com.example.firebaseapp.myPackages.data.remote.firebase.auth.repoImp.AuthRepoImpl
 
 class SignIn : Fragment(R.layout.fragment_sign_in) {
     private lateinit var binding: FragmentSignInBinding
     private lateinit var navController: NavController
-    var Auth: FirebaseAuth? = null
+    var authRepo: AuthRepo? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSignInBinding.bind(view)
@@ -27,63 +27,60 @@ class SignIn : Fragment(R.layout.fragment_sign_in) {
 
         val activity = activity as MainActivity
         activity.supportActionBar?.hide()
-        //to create object
-        Auth = FirebaseAuth.getInstance()
-        //for login
+
+        authRepo = AuthRepoImpl(requireContext())
+
         binding.login.setOnClickListener()
         {
           signIn()
         }
     }
-//***************************************************************************************
+
+    //***************************************************************************************
     private fun signIn() {
-        if (binding.email.text.isNotEmpty() && binding.password.text.isNotEmpty()) {
+        if (NoFieldEmpty()) {
+           VisibilityHandling(true)
+            binding.login.isVisible = false
+
+            authRepo?.let {
+                it.signIn(
+                    email = binding.email.text.toString(),
+                    password = binding.password.text.toString(),
+                    onSuccess = {
+                        binding.progressBarSignup.isVisible = false
+                        var bundle = bundleOf(
+                            "key1" to binding.email.text.toString(),
+                            "key2" to binding.password.text.toString()
+                        )
+                        navController.navigate(R.id.action_signIn_to_dealingWithNote, bundle)
+                    },
+                    onFailer = {
+                        binding.progressBarSignup.isVisible = false
+                        binding.login.isVisible = true
+                        Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+                    }
+                )
+            }
+        } else {
+            VisibilityHandling(false)
+        }
+    }
+
+    private fun NoFieldEmpty(): Boolean {
+        return (binding.email.text.isNotEmpty() &&
+                binding.password.text.isNotEmpty())
+    }
+
+    private fun VisibilityHandling(
+        ok: Boolean
+    ) {
+        if (ok) {
             binding.emailrequired.isVisible = false
             binding.passwordrequired.isVisible = false
             binding.progressBarSignup.isVisible = true
-            Auth?.signInWithEmailAndPassword(
-                binding.email.text.toString(),
-                binding.password.text.toString()
-            )
-                ?.addOnCompleteListener(object : OnCompleteListener<AuthResult> {
-                    override fun onComplete(p0: Task<AuthResult>) {
-                        if (p0.isSuccessful) {
-                            //This account already exists
-                            verifyEmailAddress()
-                            binding.progressBarSignup.isVisible = false
-                        } else {
-                            //this account is not found
-                            Toast.makeText(
-                                requireContext(),
-                                p0.exception.toString(),
-                                Toast.LENGTH_LONG
-                            ).show()
-                            binding.progressBarSignup.isVisible = false
-                        }
-                    }
-                })
         } else {
-            if (binding.email.text.isEmpty())
-                binding.emailrequired.isVisible = true
-            if (binding.password.text.isEmpty())
-                binding.passwordrequired.isVisible = true
-        }
-    }
-    //*********************************************************************************
-    private fun verifyEmailAddress()
-    {
-        //for verify email
-        if(Auth?.currentUser!!.isEmailVerified)
-        {
-            Toast.makeText(requireContext(), "Successful", Toast.LENGTH_LONG)
-                .show()
-            var bundle = bundleOf(
-                "key1" to binding.email.text.toString(),
-                "key2" to binding.password.text.toString()
-            )
-            navController.navigate(R.id.action_signIn_to_dealingWithNote, bundle)
-        }else{
-            Toast.makeText(requireContext(), "Please verify your account..", Toast.LENGTH_LONG).show()
+            binding.emailrequired.isVisible = binding.email.text.isEmpty()
+            binding.passwordrequired.isVisible = binding.password.text.isEmpty()
         }
     }
 }

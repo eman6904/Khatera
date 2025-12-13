@@ -40,7 +40,7 @@
     <Button
         android:id="@+id/login"
         android:layout_width="@dimen/_150sdp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_45sdp"
         android:text="@string/sign_in"
         android:textAllCaps="false"
         android:textSize="@dimen/_15sdp"

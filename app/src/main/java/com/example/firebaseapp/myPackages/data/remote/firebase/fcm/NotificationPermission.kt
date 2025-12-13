@@ -1,4 +1,4 @@
-package com.example.firebaseapp.myPackages.data.firebase.fcm
+package com.example.firebaseapp.myPackages.data.remote.firebase.fcm
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager

@@ -1,27 +1,19 @@
 package com.example.firebaseapp.myPackages.data.models
 
 class NoteContent{
-    var id:String?=null
-    var title:String?=null
-    var note:String?=null
-    var date:String?=null
-    var email:String?=null
-    var password:String?=null
+    var id:String? = null
+    var title:String? = null
+    var note:String? = null
+    var date:String? = null
+    var user:User? = null
    constructor(){}
-    constructor(  id:String,title:String, note:String, date: String)
+    constructor(  id:String,title:String, note:String, date: String,user:User)
     {
-        this.id=id
-        this.title=title
-        this.note=note
-        this.date=date
+        this.id = id
+        this.title = title
+        this.note = note
+        this.date = date
+        this.user = user
     }
-    constructor(  id:String,title:String, note:String, date: String,email:String,password:String)
-    {
-        this.id=id
-        this.title=title
-        this.note=note
-        this.date=date
-        this.email=email
-        this.password=password
-    }
+
 }

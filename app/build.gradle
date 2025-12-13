@@ -95,6 +95,8 @@ dependencies {
     //----------------NOTIFICATIONS-----------------
     implementation 'com.google.firebase:firebase-messaging-ktx'
 
+    //----------------------HAWK---------------------------
+    implementation 'com.orhanobut:hawk:2.0.1'
 
 
 }

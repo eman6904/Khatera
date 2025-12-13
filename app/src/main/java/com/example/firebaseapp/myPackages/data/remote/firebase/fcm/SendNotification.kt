@@ -1,4 +1,4 @@
-package com.example.firebaseapp.myPackages.data.firebase.fcm
+package com.example.firebaseapp.myPackages.data.remote.firebase.fcm
 
 import com.example.firebaseapp.myPackages.data.models.NoteContent
 
