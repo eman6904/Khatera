@@ -1,6 +1,7 @@
 package com.example.firebaseapp.myPackages.data.remote.firebase.database.repo
 
 import com.example.firebaseapp.myPackages.data.models.NoteContent
+import com.example.firebaseapp.myPackages.data.models.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 
@@ -28,7 +29,7 @@ interface DataRepo {
 
     fun shareNote(
         noteId: String,
-        onSuccess: () -> Unit,
+        onSuccess: (Boolean) -> Unit,
         onFailure: () -> Unit
     )
 
@@ -54,5 +55,12 @@ interface DataRepo {
     /* ---------- Cancel ---------- */
 
     fun cancelRequest()
+
+    /* ---------- UpdateUser ---------- */
+    fun updateRemoteUser(
+        user: User,
+        onSuccess: () -> Unit,
+        onFailure: () -> Unit
+    )
 
 }

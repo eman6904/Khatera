@@ -23,6 +23,7 @@ class AuthRepoImpl(val context: Context) : AuthRepo {
         authRef = FirebaseAuth.getInstance()
     }
 
+    //=====================================================
     override fun signUp(
         user: User,
         onSuccess: () -> Unit,
@@ -53,6 +54,7 @@ class AuthRepoImpl(val context: Context) : AuthRepo {
         })
     }
 
+    //=====================================================
     override fun sendEmailVerification(onSuccess: () -> Unit, onFailure: (String) -> Unit) {
         //send message to verify email
         authRef?.currentUser?.sendEmailVerification()?.addOnCompleteListener {
@@ -65,6 +67,7 @@ class AuthRepoImpl(val context: Context) : AuthRepo {
         }
     }
 
+    //=====================================================
     override fun signIn(
         email: String,
         password: String,
@@ -75,26 +78,26 @@ class AuthRepoImpl(val context: Context) : AuthRepo {
             email,
             password
         )?.addOnCompleteListener(object : OnCompleteListener<AuthResult> {
-                override fun onComplete(p0: Task<AuthResult>) {
-                    if (p0.isSuccessful) {
-                        //This account already exists
-                        verifyEmailAddress(
-                            onSuccess = { onSuccess() },
-                            onFailure = { onFailure(it) }
-                        )
-                    } else {
-                       onFailure(context.getString(R.string.email_or_password_incorrect))
-                    }
+            override fun onComplete(p0: Task<AuthResult>) {
+                if (p0.isSuccessful) {
+                    //This account already exists
+                    verifyEmailAddress(
+                        onSuccess = { onSuccess() },
+                        onFailure = { onFailure(it) }
+                    )
+                } else {
+                    onFailure(context.getString(R.string.email_or_password_incorrect))
                 }
-            })
+            }
+        })
     }
 
+    //=====================================================
     override fun verifyEmailAddress(onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-        //for verify email
-        if(authRef?.currentUser!!.isEmailVerified)
-        {
+        //to verify email
+        if (authRef?.currentUser!!.isEmailVerified) {
             onSuccess()
-        }else{
+        } else {
             onFailure(context.getString(R.string.please_verify_your_account))
         }
     }

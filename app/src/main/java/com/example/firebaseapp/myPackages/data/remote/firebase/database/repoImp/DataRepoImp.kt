@@ -2,7 +2,9 @@ package com.example.firebaseapp.myPackages.data.remote.firebase.database.repoImp
 
 import android.util.Log
 import com.example.firebaseapp.myPackages.data.local.UserData.Companion.getUser
+import com.example.firebaseapp.myPackages.data.local.UserData.Companion.updateUser
 import com.example.firebaseapp.myPackages.data.models.NoteContent
+import com.example.firebaseapp.myPackages.data.models.User
 import com.example.firebaseapp.myPackages.data.remote.firebase.database.repo.DataRepo
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -25,6 +27,7 @@ class DataRepoImp() : DataRepo {
     var userId: String = ""
     private var userRef: DatabaseReference? = null
     private var notesRef: DatabaseReference? = null
+    private var usersRef: DatabaseReference? = null
     private var sharedNotesRef: DatabaseReference? = null
     private var notesListener: ValueEventListener? = null
 
@@ -35,8 +38,10 @@ class DataRepoImp() : DataRepo {
         notesRef = database.getReference("Notes")
         userRef = notesRef?.child(userId)
         sharedNotesRef = database.getReference("shared_notes")
+        usersRef = database.getReference("Users")
     }
 
+    //=====================================================
     override fun addNote(
         note: NoteContent,
         onSuccess: () -> Unit,
@@ -49,6 +54,7 @@ class DataRepoImp() : DataRepo {
             ?.addOnFailureListener { onFailure() }
     }
 
+    //=====================================================
     override fun updateNote(
         note: NoteContent,
         onSuccess: () -> Unit,
@@ -59,6 +65,7 @@ class DataRepoImp() : DataRepo {
             ?.addOnFailureListener { onFailure() }
     }
 
+    //=====================================================
     override fun deleteNote(
         noteId: String,
         onSuccess: () -> Unit,
@@ -69,16 +76,43 @@ class DataRepoImp() : DataRepo {
             ?.addOnFailureListener { onFailure() }
     }
 
+    //=====================================================
     override fun shareNote(
         noteId: String,
-        onSuccess: () -> Unit,
+        onSuccess: (Boolean) -> Unit,
         onFailure: () -> Unit
     ) {
-        userRef?.child(noteId)?.child("isShared")?.setValue(true)
-            ?.addOnSuccessListener { onSuccess() }
-            ?.addOnFailureListener { onFailure() }
+        val noteRef = userRef?.child(noteId) ?: return
+        noteRef.child("isShared").get()
+            .addOnSuccessListener { snapshot ->
+                val isShared = snapshot.getValue(Boolean::class.java) ?: false
+                if (isShared) {
+                    onSuccess(true)
+                    return@addOnSuccessListener
+                }
+                noteRef.child("isShared").setValue(true)
+                    .addOnSuccessListener {
+                        updateRemoteUser(
+                            user = getUser().copy(
+                                sharedNotesCount = getUser().sharedNotesCount + 1
+                            ),
+                            onSuccess = {
+                                onSuccess(false)
+                            },
+                            onFailure = {
+                                onFailure()
+                            }
+                        )
+                    }.addOnFailureListener {
+                        onFailure()
+                    }
+            }.addOnFailureListener {
+                onFailure()
+            }
     }
 
+
+    //=====================================================
     override fun getUserNotes(
         onSuccess: (List<NoteContent>) -> Unit,
         onFailure: () -> Unit
@@ -99,6 +133,7 @@ class DataRepoImp() : DataRepo {
             })
     }
 
+    //=====================================================
     override fun getUserSharedNotes(
         userId: String,
         onSuccess: (List<NoteContent>) -> Unit,
@@ -121,6 +156,8 @@ class DataRepoImp() : DataRepo {
                 }
             })
     }
+
+    //=====================================================
     override fun getAllSharedNotes(
         scope: CoroutineScope,
         onSuccess: (List<NoteContent>) -> Unit,
@@ -137,7 +174,7 @@ class DataRepoImp() : DataRepo {
 
                 val deferreds = userIds.map { userId ->
                     async {
-                        suspendCancellableCoroutine{ cont ->
+                        suspendCancellableCoroutine { cont ->
                             getUserSharedNotes(
                                 userId,
                                 onSuccess = { notes -> cont.resume(notes) {} },
@@ -159,26 +196,43 @@ class DataRepoImp() : DataRepo {
         }
     }
 
-   private fun getAllUserIds(
-       onSuccess: (List<String>) -> Unit,
-       onFailure: () -> Unit
-   ) {
-       notesRef?.addListenerForSingleValueEvent(object : ValueEventListener {
-           override fun onDataChange(snapshot: DataSnapshot) {
-               val userIds = snapshot.children.mapNotNull { it.key }
-               onSuccess(userIds)
-           }
+    //=====================================================
+    private fun getAllUserIds(
+        onSuccess: (List<String>) -> Unit,
+        onFailure: () -> Unit
+    ) {
+        notesRef?.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val userIds = snapshot.children.mapNotNull { it.key }
+                onSuccess(userIds)
+            }
 
-           override fun onCancelled(error: DatabaseError) {
-               onFailure()
-           }
-       })
-   }
+            override fun onCancelled(error: DatabaseError) {
+                onFailure()
+            }
+        })
+    }
+
+    //=====================================================
     override fun cancelRequest() {
         notesListener?.let {
             userRef?.removeEventListener(it)
             notesListener = null
         }
+    }
+
+    //======================================================
+    override fun updateRemoteUser(
+        user: User,
+        onSuccess: () -> Unit,
+        onFailure: () -> Unit
+    ) {
+        usersRef?.child(user.id!!)?.setValue(user)
+            ?.addOnSuccessListener {
+                updateUser(user)
+                onSuccess()
+            }
+            ?.addOnFailureListener { onFailure() }
     }
 
 

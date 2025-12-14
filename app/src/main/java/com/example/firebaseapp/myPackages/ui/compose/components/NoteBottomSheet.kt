@@ -136,7 +136,7 @@ fun NoteBottomSheet(
                                 onTitleChange(it)
                             },
                             modifier = Modifier,
-                            errorMessage = titleError
+                            errorMessage = titleError,
                         )
                     }
                     item {
@@ -160,7 +160,7 @@ fun NoteBottomSheet(
                                 }
                             },
                             modifier = Modifier,
-                            errorMessage = contentError
+                            errorMessage = contentError,
                         )
                     }
                 }

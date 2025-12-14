@@ -3,6 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.plugin.compose'   // for compose
     id 'com.google.gms.google-services'
+    id("kotlin-parcelize")
+
 }
 
 android {

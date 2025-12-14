@@ -34,6 +34,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun InputField(
@@ -114,7 +115,7 @@ fun InputField(
                 .fillMaxWidth()
                 .border(
                     width = 2.dp,
-                    color =  if (isValid.not()) Red else Gray,
+                    color =  if (errorMessage.isNotEmpty()) Red else Gray,
                     RoundedCornerShape(cornerRadius.dp)
                 )
                 .defaultMinSize(minHeight = minHeight.dp)
@@ -139,11 +140,13 @@ fun InputField(
             textStyle = MaterialTheme.typography.bodyLarge
         )
 
-        if (!isValid && errorMessage.isNotEmpty()) {
+        if (errorMessage.isNotEmpty()) {
             Text(
                 text = errorMessage,
                 style = MaterialTheme.typography.bodyMedium,
+                fontSize = 8.sp,
                 textAlign = TextAlign.Start,
+                color = Color.Red,
                 modifier = Modifier
                     .padding(start = 10.dp, top = 4.dp)
             )

@@ -82,12 +82,17 @@ class Note : Fragment(R.layout.fragment_display_note) {
                         isLoading = true
                         dataRepo?.shareNote(
                             noteId = noteId?:"",
-                            onSuccess = {
+                            onSuccess = {alreadyShared->
                                 isLoading = false
                                 showWarning = false
-                                Toast.makeText(requireContext(),
+                                if(!alreadyShared)
+                                 Toast.makeText(requireContext(),
                                     getString(R.string.note_shared_successfully),
                                     Toast.LENGTH_LONG).show()
+                                else
+                                    Toast.makeText(requireContext(),
+                                        getString(R.string.this_note_already_shared),
+                                        Toast.LENGTH_LONG).show()
                             },
                             onFailure = {
                                 isLoading = false

@@ -47,7 +47,7 @@ import kotlinx.coroutines.cancel
 
 @Composable
 fun Notifications(
-    onItemDetailsNav: () -> Unit
+    onItemDetailsNav: (NoteContent?) -> Unit
 ) {
     val dataRepo = remember { DataRepoImp() }
     var items by remember { mutableStateOf(emptyList<NoteContent>()) }
@@ -104,11 +104,11 @@ fun Notifications(
 
                 items(
                     items = items,
-                    key = { it.id ?: it.hashCode().toString() } // fallback للـ id null
+                    key = { it.id ?: it.hashCode().toString() }
                 ) { note ->
                     NotificationItem(
                         note = note,
-                        onItemClick = { onItemDetailsNav() }
+                        onItemClick = { onItemDetailsNav(note) }
                     )
                 }
             }

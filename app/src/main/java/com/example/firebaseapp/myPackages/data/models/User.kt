@@ -1,5 +1,9 @@
 package com.example.firebaseapp.myPackages.data.models
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class User(
     var id:String? = null,
     var userName:String? = null,
@@ -8,4 +12,4 @@ data class User(
     var joinDate:String? = null,
     var profileImage:String? = null,
     var sharedNotesCount : Int = 0
-)
+): Parcelable

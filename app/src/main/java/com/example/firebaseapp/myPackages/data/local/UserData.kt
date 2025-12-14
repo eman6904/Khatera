@@ -9,7 +9,7 @@ class UserData {
             Hawk.put("currentUser", user)
         }
 
-        fun getUser(): User? {
+        fun getUser(): User {
             return Hawk.get("currentUser")
         }
 
