@@ -12,7 +12,6 @@ import androidx.navigation.Navigation
 import com.example.firebaseapp.R
 import com.example.firebaseapp.databinding.FragmentSignInBinding
 import com.example.firebaseapp.myPackages.MainActivity
-import com.example.firebaseapp.myPackages.data.local.UserData.Companion.saveUser
 import com.example.firebaseapp.myPackages.data.remote.firebase.auth.repo.AuthRepo
 import com.example.firebaseapp.myPackages.data.remote.firebase.auth.repoImp.AuthRepoImpl
 
@@ -57,7 +56,7 @@ class SignIn : Fragment(R.layout.fragment_sign_in) {
                         )
                         navController.navigate(R.id.action_signIn_to_dealingWithNote, bundle)
                     },
-                    onFailer = {
+                    onFailure = {
                         binding.progressBarSignup.isVisible = false
                         binding.login.isVisible = true
                         Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()

@@ -59,7 +59,7 @@ class SignUp : Fragment(R.layout.fragment_sign_up) {
                         navController.navigate(R.id.action_signUp_to_signIn)
 
                     },
-                    onFailer = {
+                    onFailure = {
                         binding.progressBarSignup.isVisible = false
                         binding.register.isVisible = true
                         Toast.makeText(

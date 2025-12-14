@@ -6,5 +6,6 @@ data class User(
     var email:String? = null,
     var password:String? = null,
     var joinDate:String? = null,
-    var profileImage:String? = null
+    var profileImage:String? = null,
+    var sharedNotesCount : Int = 0
 )

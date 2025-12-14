@@ -168,17 +168,4 @@ fun NoteBottomSheet(
         }
 
     }
-
 }
-
-//val imageUrl = getUser()?.profileImage
-//AsyncImage(
-//model = imageUrl.takeUnless { it.isNullOrEmpty() },
-//placeholder = painterResource(R.drawable.image5),
-//error = painterResource(R.drawable.image5),
-//contentDescription = null,
-//modifier = Modifier
-//.size(50.dp)
-//.clip(CircleShape),
-//contentScale = ContentScale.Crop
-//)

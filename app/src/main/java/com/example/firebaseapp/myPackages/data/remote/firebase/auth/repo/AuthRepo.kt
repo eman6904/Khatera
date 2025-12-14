@@ -7,23 +7,23 @@ interface AuthRepo {
     fun signUp(
         user: User,
         onSuccess:()->Unit,
-        onFailer:(String)->Unit
+        onFailure:(String)->Unit
         )
 
     fun sendEmailVerification(
         onSuccess:()->Unit,
-        onFailer:(String)->Unit
+        onFailure:(String)->Unit
     )
 
     fun signIn(
         email:String,
         password:String,
         onSuccess:()->Unit,
-        onFailer:(String)->Unit
+        onFailure:(String)->Unit
     )
 
     fun verifyEmailAddress(
         onSuccess:()->Unit,
-        onFailer:(String)->Unit
+        onFailure:(String)->Unit
     )
 }

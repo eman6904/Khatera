@@ -40,4 +40,5 @@
     <string name="content_is_empty">Content is empty</string>
     <string name="failed_to_share_note">Failed to share note</string>
     <string name="note_shared_successfully">Note shared successfully</string>
+    <string name="shared_notes">Shared Notes</string>
 </resources>

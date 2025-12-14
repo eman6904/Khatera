@@ -1,7 +1,6 @@
 package com.example.firebaseapp.myPackages.ui.xml.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.compose.runtime.getValue
@@ -18,12 +17,14 @@ import com.example.firebaseapp.databinding.HomeFragmentBinding
 import com.example.firebaseapp.myPackages.data.local.UserData.Companion.getUser
 import com.example.firebaseapp.myPackages.data.models.NoteContent
 import com.example.firebaseapp.myPackages.data.models.User
+import com.example.firebaseapp.myPackages.data.remote.firebase.database.repo.DataRepo
 import com.example.firebaseapp.myPackages.data.remote.firebase.database.repoImp.DataRepoImp
 import com.example.firebaseapp.myPackages.ui.compose.components.AlertDialog
 import com.example.firebaseapp.myPackages.ui.compose.components.HomeTopBar
 import com.example.firebaseapp.myPackages.ui.compose.components.NoteBottomSheet
 import com.example.firebaseapp.myPackages.ui.xml.adapters.NoteAdapter
 import com.example.firebaseapp.myPackages.utils.getCurrentDate
+import com.example.firebaseapp.myPackages.utils.showError
 import com.google.firebase.auth.FirebaseAuth
 
 class Home : Fragment(R.layout.home_fragment) {
@@ -31,7 +32,7 @@ class Home : Fragment(R.layout.home_fragment) {
     private lateinit var binding: HomeFragmentBinding
     private lateinit var navController: NavController
     lateinit var adapter: NoteAdapter
-    var dataRepo: DataRepoImp? = null
+    var dataRepo: DataRepo? = null
     var list = ArrayList<NoteContent>()
     var selectedNote: NoteContent? = null
 
@@ -76,15 +77,15 @@ class Home : Fragment(R.layout.home_fragment) {
                     onConfirmClick = {
                         isLoading = true
                         dataRepo?.deleteNote(
-                            note = selectedNote!!,
+                            noteId = selectedNote?.id?:"",
                             onSuccess = {
                                 showWarning = false
                                 isLoading = false
                             },
-                            onFailer = {
+                            onFailure = {
                                 showWarning = false
                                 isLoading = false
-                                showError()
+                                showError(requireContext())
                             }
                         )
                     },
@@ -92,9 +93,9 @@ class Home : Fragment(R.layout.home_fragment) {
                 )
             }
             //## Get & Display---------------------------------------
-            dataRepo?.getNotes(
+            dataRepo?.getUserNotes(
                 onSuccess = { notes ->
-                    if (!isAdded) return@getNotes
+                    if (!isAdded) return@getUserNotes
                     adapter = NoteAdapter(
                         context = requireContext(),
                         notes = notes,
@@ -113,6 +114,7 @@ class Home : Fragment(R.layout.home_fragment) {
                             val bundle = Bundle().apply {
                                 putString("note", it.note)
                                 putString("title", it.title)
+                                putString("noteId", it.id)
                             }
                             navController.navigate(
                                 R.id.action_dealingWithNote_to_displayNote2,
@@ -125,8 +127,8 @@ class Home : Fragment(R.layout.home_fragment) {
                     binding.progressBar.isVisible = false
 
                 },
-                onFailer = {
-                    if (!isAdded) return@getNotes
+                onFailure = {
+                    if (!isAdded) return@getUserNotes
                     binding.progressBar.isVisible = false
                     Toast.makeText(
                         requireContext(),
@@ -157,12 +159,12 @@ class Home : Fragment(R.layout.home_fragment) {
                                         noteContent = ""
                                         title = ""
                                     },
-                                    onFailer = {
+                                    onFailure = {
                                         isLoading = false
                                         writeNote = false
                                         noteContent = ""
                                         title = ""
-                                        showError()
+                                        showError(requireContext())
                                     }
                                 )
                             }
@@ -181,12 +183,12 @@ class Home : Fragment(R.layout.home_fragment) {
                                         noteContent = ""
                                         title = ""
                                     },
-                                    onFailer = {
+                                    onFailure = {
                                         isLoading = false
                                         writeNote = false
                                         noteContent = ""
                                         title = ""
-                                        showError()
+                                        showError(requireContext())
                                     }
                                 )
                             }
@@ -217,11 +219,4 @@ class Home : Fragment(R.layout.home_fragment) {
         dataRepo?.cancelRequest()
     }
 
-    private fun showError() {
-        Toast.makeText(
-            requireContext(),
-            getString(R.string.something_went_wrong_try_again), Toast.LENGTH_LONG
-        ).show()
-
-    }
 }

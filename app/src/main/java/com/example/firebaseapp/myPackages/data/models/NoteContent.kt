@@ -6,6 +6,7 @@ class NoteContent{
     var note:String? = null
     var date:String? = null
     var user:User? = null
+    var isShared :Boolean = false
    constructor(){}
     constructor(title:String, note:String, date: String,user:User)
     {

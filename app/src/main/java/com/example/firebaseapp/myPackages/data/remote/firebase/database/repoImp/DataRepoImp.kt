@@ -10,9 +10,19 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.resumeWithException
 
 class DataRepoImp() : DataRepo {
-    var userId:String = ""
+    var userId: String = ""
     private var userRef: DatabaseReference? = null
     private var notesRef: DatabaseReference? = null
     private var sharedNotesRef: DatabaseReference? = null
@@ -20,85 +30,156 @@ class DataRepoImp() : DataRepo {
 
 
     init {
-          val database = Firebase.database
-          userId = getUser()?.id?:""
-          notesRef = database.getReference("Notes")
-          userRef = notesRef?.child(userId)
-          sharedNotesRef = database.getReference("shared_notes")
+        val database = Firebase.database
+        userId = getUser()?.id ?: ""
+        notesRef = database.getReference("Notes")
+        userRef = notesRef?.child(userId)
+        sharedNotesRef = database.getReference("shared_notes")
     }
 
     override fun addNote(
         note: NoteContent,
         onSuccess: () -> Unit,
-        onFailer: () -> Unit
+        onFailure: () -> Unit
     ) {
-        val id =  userRef?.push()?.key!!
-        note.id =  id
+        val id = userRef?.push()?.key!!
+        note.id = id
         userRef?.child(id)?.setValue(note)
             ?.addOnSuccessListener { onSuccess() }
-            ?.addOnFailureListener { onFailer() }
+            ?.addOnFailureListener { onFailure() }
     }
 
     override fun updateNote(
         note: NoteContent,
         onSuccess: () -> Unit,
-        onFailer: () -> Unit
+        onFailure: () -> Unit
     ) {
         userRef?.child(note.id!!)?.setValue(note)
             ?.addOnSuccessListener { onSuccess() }
-            ?.addOnFailureListener { onFailer() }
+            ?.addOnFailureListener { onFailure() }
     }
 
     override fun deleteNote(
-        note: NoteContent,
+        noteId: String,
         onSuccess: () -> Unit,
-        onFailer: () -> Unit
+        onFailure: () -> Unit
     ) {
-        userRef?.child(note.id!!)?.removeValue()
+        userRef?.child(noteId)?.removeValue()
             ?.addOnSuccessListener { onSuccess() }
-            ?.addOnFailureListener { onFailer() }
+            ?.addOnFailureListener { onFailure() }
     }
 
     override fun shareNote(
-        note: NoteContent,
+        noteId: String,
         onSuccess: () -> Unit,
-        onFailer: () -> Unit
+        onFailure: () -> Unit
     ) {
-        val id = sharedNotesRef?.push()?.key!!
-        note.id = id
-        sharedNotesRef?.child(id)?.setValue(note)
+        userRef?.child(noteId)?.child("isShared")?.setValue(true)
             ?.addOnSuccessListener { onSuccess() }
-            ?.addOnFailureListener { onFailer() }
+            ?.addOnFailureListener { onFailure() }
     }
 
-    override fun getNotes(
+    override fun getUserNotes(
         onSuccess: (List<NoteContent>) -> Unit,
-        onFailer: () -> Unit
+        onFailure: () -> Unit
     ) {
-        notesListener = object : ValueEventListener {
+        notesRef?.child(userId)
+            ?.addListenerForSingleValueEvent(object : ValueEventListener {
 
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val notesList = mutableListOf<NoteContent>()
-
-                    for (noteSnapshot in snapshot.children) {
-                        val note = noteSnapshot.getValue(NoteContent::class.java)
-                        note?.let { notesList.add(it) }
+                    val notes = snapshot.children.mapNotNull {
+                        it.getValue(NoteContent::class.java)
                     }
-                    onSuccess(notesList)
+                    onSuccess(notes)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    onFailer()
+                    onFailure()
                 }
-            }
-        userRef?.addListenerForSingleValueEvent(notesListener!!)
+            })
     }
 
-    fun cancelRequest() {
+    override fun getUserSharedNotes(
+        userId: String,
+        onSuccess: (List<NoteContent>) -> Unit,
+        onFailure: () -> Unit
+    ) {
+        notesRef?.child(userId)
+            ?.orderByChild("isShared")
+            ?.equalTo(true)
+            ?.addListenerForSingleValueEvent(object : ValueEventListener {
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val notes = snapshot.children.mapNotNull {
+                        it.getValue(NoteContent::class.java)
+                    }
+                    onSuccess(notes)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    onFailure()
+                }
+            })
+    }
+    override fun getAllSharedNotes(
+        scope: CoroutineScope,
+        onSuccess: (List<NoteContent>) -> Unit,
+        onFailure: () -> Unit
+    ): Job {
+        return scope.launch(Dispatchers.IO) {
+            try {
+                val userIds = suspendCancellableCoroutine { cont ->
+                    getAllUserIds(
+                        onSuccess = { ids -> cont.resume(ids) {} },
+                        onFailure = { cont.resumeWithException(Exception("Failed to fetch user IDs")) }
+                    )
+                }
+
+                val deferreds = userIds.map { userId ->
+                    async {
+                        suspendCancellableCoroutine{ cont ->
+                            getUserSharedNotes(
+                                userId,
+                                onSuccess = { notes -> cont.resume(notes) {} },
+                                onFailure = { cont.resumeWithException(Exception("Failed for user $userId")) }
+                            )
+                        }
+                    }
+                }
+                val results = deferreds.awaitAll().flatten()
+                withContext(Dispatchers.Main) {
+                    onSuccess(results)
+                }
+
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    onFailure()
+                }
+            }
+        }
+    }
+
+   private fun getAllUserIds(
+       onSuccess: (List<String>) -> Unit,
+       onFailure: () -> Unit
+   ) {
+       notesRef?.addListenerForSingleValueEvent(object : ValueEventListener {
+           override fun onDataChange(snapshot: DataSnapshot) {
+               val userIds = snapshot.children.mapNotNull { it.key }
+               onSuccess(userIds)
+           }
+
+           override fun onCancelled(error: DatabaseError) {
+               onFailure()
+           }
+       })
+   }
+    override fun cancelRequest() {
         notesListener?.let {
             userRef?.removeEventListener(it)
             notesListener = null
         }
     }
+
 
 }
