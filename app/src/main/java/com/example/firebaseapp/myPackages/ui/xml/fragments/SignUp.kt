@@ -29,6 +29,8 @@ class SignUp : Fragment(R.layout.fragment_sign_up) {
         val activity = activity as MainActivity
         activity.supportActionBar?.hide()
 
+        editTextPasswordToggle(binding.password)
+
         authRepo = AuthRepoImpl(requireContext())
 
         binding.register.setOnClickListener {

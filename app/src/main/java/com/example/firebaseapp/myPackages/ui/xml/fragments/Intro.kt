@@ -41,14 +41,5 @@ class Intro : Fragment(R.layout.fragment_note_face) {
         {
             navController.navigate(R.id.action_noteFace_to_signIn)
         }
-//        binding.composeView.setContent {
-//            Column(
-//                modifier = Modifier.fillMaxWidth()
-//                    .heightIn(100.dp)
-//                    .background(Color.Gray)
-//            ){
-//
-//            }
-//        }
     }
 }

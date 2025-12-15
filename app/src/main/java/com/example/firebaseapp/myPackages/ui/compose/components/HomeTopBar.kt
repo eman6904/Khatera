@@ -112,7 +112,7 @@ fun HomeTopBar(
 
             DropdownMenu(
                 modifier = Modifier
-                    .background(color = Color.Black),
+                    .background(Color(0xFF212121)),
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {

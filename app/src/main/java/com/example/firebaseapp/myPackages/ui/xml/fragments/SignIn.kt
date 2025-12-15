@@ -1,9 +1,13 @@
 package com.example.firebaseapp.myPackages.ui.xml.fragments
 
 import android.os.Bundle
+import android.text.method.PasswordTransformationMethod
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import android.widget.EditText
 import android.widget.Toast
+import androidx.compose.ui.res.stringResource
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -14,6 +18,7 @@ import com.example.firebaseapp.databinding.FragmentSignInBinding
 import com.example.firebaseapp.myPackages.MainActivity
 import com.example.firebaseapp.myPackages.data.remote.firebase.auth.repo.AuthRepo
 import com.example.firebaseapp.myPackages.data.remote.firebase.auth.repoImp.AuthRepoImpl
+import com.example.firebaseapp.myPackages.ui.compose.components.LoadingView
 
 class SignIn : Fragment(R.layout.fragment_sign_in) {
     private lateinit var binding: FragmentSignInBinding
@@ -28,6 +33,8 @@ class SignIn : Fragment(R.layout.fragment_sign_in) {
         val activity = activity as MainActivity
         activity.supportActionBar?.hide()
 
+        editTextPasswordToggle(binding.password)
+
         authRepo = AuthRepoImpl(requireContext())
 
         binding.login.setOnClickListener()
@@ -36,13 +43,14 @@ class SignIn : Fragment(R.layout.fragment_sign_in) {
         }
 
         activity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
     }
 
     //***************************************************************************************
     private fun signIn() {
         if (NoFieldEmpty()) {
            VisibilityHandling(true)
-            binding.login.isVisible = false
+            binding.login.text = ""
 
             authRepo?.let {
                 it.signIn(
@@ -58,7 +66,7 @@ class SignIn : Fragment(R.layout.fragment_sign_in) {
                     },
                     onFailure = {
                         binding.progressBarSignup.isVisible = false
-                        binding.login.isVisible = true
+                        binding.login.text = getString(R.string.sign_in)
                         Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
                     }
                 )
@@ -84,5 +92,43 @@ class SignIn : Fragment(R.layout.fragment_sign_in) {
             binding.emailrequired.isVisible = binding.email.text.isEmpty()
             binding.passwordrequired.isVisible = binding.password.text.isEmpty()
         }
+    }
+}
+fun editTextPasswordToggle(editText: EditText) {
+    var isPasswordVisible = false
+    editText.transformationMethod = PasswordTransformationMethod()
+    editText.setCompoundDrawablesWithIntrinsicBounds(
+        R.drawable.lock_open, 0, R.drawable.visibility, 0
+    )
+
+    editText.setOnTouchListener { _, event ->
+        if (event.action == MotionEvent.ACTION_UP) {
+            val drawableEnd = 2
+            val drawable = editText.compoundDrawables[drawableEnd]
+
+            if (drawable != null) {
+                val bounds = drawable.bounds
+                if (event.rawX >= (editText.right - bounds.width())) {
+
+                    isPasswordVisible = !isPasswordVisible
+
+                    if (isPasswordVisible) {
+                        editText.transformationMethod = null
+                        editText.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.lock_open, 0, R.drawable.visibility_off, 0
+                        )
+                    } else {
+                        editText.transformationMethod = PasswordTransformationMethod()
+                        editText.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.lock_open, 0, R.drawable.visibility, 0
+                        )
+                    }
+
+                    editText.setSelection(editText.text.length)
+                    return@setOnTouchListener true
+                }
+            }
+        }
+        false
     }
 }

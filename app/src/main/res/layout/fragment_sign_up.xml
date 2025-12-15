@@ -1,138 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".myPackages.ui.xml.fragments.SignUp"
-    android:background="@color/black"
     android:padding="@dimen/_30sdp">
 
+    <!-- Image Top -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_140sdp"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_100sdp"
+            android:src="@drawable/eye"/>
+    </LinearLayout>
+
+    <!-- User Name -->
     <EditText
         android:id="@+id/userName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#558B2F"
+        android:layout_height="55dp"
+        android:textSize="@dimen/_12sdp"
         android:hint="@string/enter_name"
-        android:textColor="@color/white"
+        android:textColor="@android:color/white"
         android:textColorHint="#CEE8BC"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.281" />
-
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#558B2F"
-        android:hint="@string/enter_password"
-        android:inputType="textPassword"
-        android:textColor="@color/white"
-        android:textColorHint="#CEE8BC"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.542" />
-
-    <EditText
-        android:id="@+id/email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#558B2F"
-        android:hint="@string/enter_email"
-        android:textColor="@color/white"
-        android:textColorHint="#CEE8BC"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.422" />
-
-    <Button
-        android:id="@+id/register"
-        android:layout_width="@dimen/_160sdp"
-        android:layout_height="@dimen/_45sdp"
-        android:text="@string/register"
-        android:textAllCaps="false"
-        android:textSize="@dimen/_15sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.736" />
-
-    <TextView
-        android:id="@+id/emailrequired"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/required"
-        android:textColor="#C30B0B"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.007"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.476" />
-
-    <TextView
-        android:id="@+id/passwordrequired"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/required"
-        android:textColor="#C30B0B"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.007"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.637" />
-
+        android:background="@drawable/rounded_border"
+        android:drawableStart="@drawable/ic_person"
+        android:drawablePadding="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:gravity="center_vertical"/>
     <TextView
         android:id="@+id/nameRequired"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/required"
         android:textColor="#C30B0B"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.007"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.34" />
+        android:visibility="invisible"/>
 
-    <ProgressBar
-        android:id="@+id/progressBar_signup"
-        style="?android:attr/progressBarStyle"
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_10sdp"/>
+
+    <!-- Email -->
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:textSize="@dimen/_12sdp"
+        android:hint="@string/enter_email"
+        android:textColor="@android:color/white"
+        android:textColorHint="#CEE8BC"
+        android:background="@drawable/rounded_border"
+        android:drawableStart="@drawable/ic_email"
+        android:drawablePadding="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:gravity="center_vertical"/>
+    <TextView
+        android:id="@+id/emailrequired"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/black"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.728" />
+        android:text="@string/required"
+        android:textColor="#C30B0B"
+        android:visibility="invisible"/>
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="@dimen/_50sdp"
-        android:layout_height="@dimen/_100sdp"
-        android:src="@drawable/eye"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.466"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.011" />
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_10sdp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Password -->
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:textSize="@dimen/_12sdp"
+        android:hint="@string/enter_password"
+        android:textColor="@android:color/white"
+        android:textColorHint="#CEE8BC"
+        android:background="@drawable/rounded_border"
+        android:drawableStart="@drawable/lock_open"
+        android:drawableEnd="@drawable/visibility"
+        android:drawablePadding="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:gravity="center_vertical"
+        android:inputType="textPassword"/>
+    <TextView
+        android:id="@+id/passwordrequired"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/required"
+        android:textColor="#C30B0B"
+        android:visibility="invisible"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_30sdp"/>
+
+    <!-- Button + ProgressBar -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <TextView
+            android:id="@+id/register"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:text="@string/register"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:clickable="true"
+            android:background="@drawable/rounded_shape"
+            android:textColor="@android:color/white"
+            android:layout_gravity="center"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar_signup"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:visibility="invisible"
+            android:indeterminateTint="#FFFFFF"/>
+    </FrameLayout>
+
+</LinearLayout>

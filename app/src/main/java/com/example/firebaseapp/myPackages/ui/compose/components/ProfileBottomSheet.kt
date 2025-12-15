@@ -60,15 +60,18 @@ fun ProfileBottomSheet(
 
     var sharedItemsCount by remember { mutableStateOf(0) }
     var showDialog by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
     var profileImage by remember { mutableStateOf(user.profileImage) }
     var storageRepo by remember { mutableStateOf(StorageRepoImp()) }
     var dataRepo by remember { mutableStateOf(DataRepoImp()) }
     val context = LocalContext.current
 
     val imagePicker = rememberImagePickerWithCrop { uri ->
+        isLoading = true
         storageRepo.uploadProfileImage(
             imageUri = uri,
             onSuccess = { downloadUrl ->
+                isLoading = false
                 onImageChang(downloadUrl)
                 profileImage = downloadUrl
                 dataRepo.updateRemoteUser(
@@ -108,6 +111,7 @@ fun ProfileBottomSheet(
 
                        ) {
                        ProfileImage(
+                           isLoading = isLoading,
                            imageUrl = profileImage,
                            size = 140
                        )
@@ -129,6 +133,29 @@ fun ProfileBottomSheet(
                                    modifier = Modifier.size(20.dp)
                                )
                            }
+                           ProfileMenu(
+                               expanded = showDialog,
+                               profileImage = profileImage,
+                               onUpdateClick = {
+                                   imagePicker.openPicker()
+                                   showDialog = false
+                               },
+                               onRemoveClick = {
+                                   profileImage = null
+                                   onImageChang(null)
+                                   dataRepo.updateRemoteUser(
+                                       getUser().copy(
+                                           profileImage = null
+                                       ),
+                                       onSuccess = {},
+                                       onFailure = {
+                                           showError(context)
+                                       }
+                                   )
+                                   showDialog = false
+                               },
+                               onDismiss = { showDialog = false }
+                           )
                        }
                    }
                    Spacer(modifier = Modifier
@@ -189,28 +216,6 @@ fun ProfileBottomSheet(
                        )
                    }
                }
-           }
-           if(showDialog){
-               ProfileDialog(
-                   onUpdateClick = {
-                       imagePicker.openPicker()
-                       showDialog = false
-                   },
-                   onRemoveClick = {
-                       profileImage = null
-                       onImageChang(null)
-                       dataRepo.updateRemoteUser(
-                           getUser().copy(
-                               profileImage = null
-                           ),
-                           onSuccess = {},
-                           onFailure = {
-                               showError(context)
-                           }
-                       )
-                       showDialog = false
-                   }
-               )
            }
        }
     }
