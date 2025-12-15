@@ -1,7 +1,9 @@
 package com.example.firebaseapp.myPackages.ui.compose.screens
 
+import android.icu.text.CaseMap
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,15 +31,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.firebaseapp.R
 import com.example.firebaseapp.myPackages.data.models.NoteContent
+import com.example.firebaseapp.myPackages.ui.compose.components.ProfileBottomSheet
 import com.example.firebaseapp.myPackages.ui.compose.components.ProfileImage
 
 @Composable
 fun NotificationDetails(
-    onBack:()->Unit,
+    onBack: () -> Unit,
     clickedNote: NoteContent?
-){
+) {
 
     var note by remember { mutableStateOf<NoteContent?>(null) }
+    var showProfile by remember { mutableStateOf(false) }
+    if (showProfile && note != null) {
+        ProfileBottomSheet(
+            user = note!!.user!!,
+            onDismiss = {
+                showProfile = false
+            },
+            onItemClick = {
+                note = it
+                showProfile = false
+            }
+        )
+    }
     LaunchedEffect(Unit) {
         note = clickedNote
     }
@@ -45,18 +61,21 @@ fun NotificationDetails(
         modifier = Modifier
             .fillMaxSize()
             .background(Black)
-    ){
+    ) {
         Row(
             modifier = Modifier
+                .clickable {
+                    showProfile = true
+                }
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
                 .padding(top = 40.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.Center
         ) {
             ProfileImage(
                 imageUrl = note?.user?.profileImage,
-                size = 60
+                size = 90
             )
             Column(
                 modifier = Modifier
@@ -65,56 +84,87 @@ fun NotificationDetails(
                     .padding(vertical = 10.dp)
             ) {
                 Text(
-                    text = note?.user?.userName ?: "",
+                    text = stringResource(R.string.created_by),
                     fontSize = 16.sp,
-                    fontWeight = Bold,
-                    color = Color.White,
+                    color = Color(0xFF558B2F),
                     modifier = Modifier.padding(bottom = 2.dp)
+                )
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(4.dp)
+                )
+                Text(
+                    text = note?.user?.userName ?: "",
+                    fontSize = 14.sp,
+                    color = Color.White
+                )
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(10.dp)
+                )
+                Text(
+                    text = stringResource(R.string.created_at),
+                    fontSize = 16.sp,
+                    color = Color(0xFF558B2F),
+                    modifier = Modifier.padding(bottom = 2.dp)
+                )
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(4.dp)
                 )
                 Text(
                     text = note?.date ?: "",
-                    fontSize = 10.sp,
-                    fontStyle = Italic,
+                    fontSize = 14.sp,
                     color = Color.White
                 )
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(10.dp)
+                )
+                Text(
+                    text = stringResource(R.string.title2),
+                    fontSize = 16.sp,
+                    color = Color(0xFF558B2F)
+                )
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(4.dp)
+                )
+                Text(
+                    text = note?.title ?: "",
+                    fontSize = 14.sp,
+                    fontStyle = Normal,
+                    color = Color.White
+                )
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(10.dp)
+                )
+                Text(
+                    text = stringResource(R.string.content),
+                    fontSize = 16.sp,
+                    color = Color(0xFF558B2F)
+                )
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(4.dp)
+                )
+                Text(
+                    text = note?.note ?: "",
+                    fontSize = 14.sp,
+                    fontStyle = Normal,
+                    color = Color.White
+                )
+
             }
         }
-       Column(modifier = Modifier.padding(24.dp)){
-           Text(
-               text = stringResource(R.string.title),
-               fontSize = 16.sp,
-               fontStyle = Italic,
-               color = Color(0xFF558B2F)
-           )
-           Spacer(modifier = Modifier
-               .fillMaxWidth()
-               .height(4.dp))
-           Text(
-               text = note?.title?:"",
-               fontSize = 13.sp,
-               fontStyle = Normal,
-               color = Color.White
-           )
-           Spacer(modifier = Modifier
-               .fillMaxWidth()
-               .height(10.dp))
 
-           Text(
-               text = stringResource(R.string.content),
-               fontSize = 16.sp,
-               fontStyle = Italic,
-               color = Color(0xFF558B2F)
-           )
-           Spacer(modifier = Modifier
-               .fillMaxWidth()
-               .height(4.dp))
-
-           Text(
-               text = note?.note?:"",
-               fontSize = 13.sp,
-               fontStyle = Normal,
-               color = Color.White
-           )
-       }
     }
 }

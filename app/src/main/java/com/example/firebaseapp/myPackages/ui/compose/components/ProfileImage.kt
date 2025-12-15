@@ -2,6 +2,7 @@ package com.example.firebaseapp.myPackages.ui.compose.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -37,13 +38,13 @@ fun ProfileImage(imageUrl:String? = null,size:Int = 45) {
             modifier = Modifier
                 .size(size.dp)
                 .clip(CircleShape)
+                .border(width = 1.dp, color = Color(0xFF69F805))
                 .background(Color(0xFF558B2F)),
             contentAlignment = Alignment.Center
         ){
             Image(
                 painter = painterResource(R.drawable.notephoto),
                 contentDescription = null,
-                modifier = Modifier.padding(10.dp)
             )
         }
     }

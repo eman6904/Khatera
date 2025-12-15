@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle.Companion.Italic
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
@@ -51,10 +52,42 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import org.w3c.dom.Text
 
 @Composable
 fun Notifications(
     onItemDetailsNav: (NoteContent?) -> Unit
+) {
+   Box(
+       modifier = Modifier
+           .fillMaxSize()
+           .background(Black)
+           .padding( 10.dp)
+   ){
+       SharedItemsContent(
+           onItemDetailsNav = onItemDetailsNav,
+           title = {
+               Text(
+                   text = stringResource(R.string.notifications),
+                   style = MaterialTheme.typography.headlineMedium,
+                   color = Color.White,
+                   fontSize = 24.sp,
+                   fontWeight = Bold,
+                   fontStyle = Italic,
+                   textAlign = TextAlign.Center,
+                   modifier = Modifier.fillMaxWidth()
+                       .padding(top = 10.dp)
+               )
+           }
+       )
+   }
+}
+
+@Composable
+fun SharedItemsContent(
+    onItemDetailsNav: (NoteContent?) -> Unit,
+    sharedItems: (Int) -> Unit = {},
+    title: @Composable () -> Unit
 ) {
     val dataRepo = remember { DataRepoImp() }
     var items by remember { mutableStateOf(emptyList<NoteContent>()) }
@@ -69,6 +102,7 @@ fun Notifications(
             scope = scope,
             onSuccess = {
                 items = it
+                sharedItems(it.size)
                 isLoading = false
             },
             onFailure = {
@@ -78,60 +112,45 @@ fun Notifications(
         )
     }
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(Black)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp)
-        ) {
-            //## Title
-            Text(
-                text = stringResource(R.string.shared_notes),
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.White,
-                fontSize = 24.sp,
-                fontWeight = Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
+        //## Title
+        title()
 
-            Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
-            //## Notes
-            LazyColumn {
-                if (isLoading) {
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillParentMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator(
-                                color = Color(0xFF558B2F),
-                                strokeWidth = 4.dp,
-                                modifier = Modifier.padding(16.dp)
-                            )
-                        }
+        //## Notes
+        LazyColumn {
+            if (isLoading) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillParentMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        LoadingView(
+                            sz = 50,
+                            strkW = 4,
+                            color = Color(0xFF558B2F)
+                        )
                     }
                 }
+            }
 
-                items(
-                    items = items,
-                    key = { it.id ?: it.hashCode().toString() }
-                ) { note ->
-                    NotificationItem(
-                        note = note,
-                        onItemClick = { onItemDetailsNav(note) }
-                    )
-                }
+            items(
+                items = items,
+                key = { it.id ?: it.hashCode().toString() }
+            ) { note ->
+                NotificationItem(
+                    note = note,
+                    onItemClick = { onItemDetailsNav(note) }
+                )
             }
         }
     }
-
     DisposableEffect(Unit) {
         onDispose {
             dataRepo.cancelRequest()

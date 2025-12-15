@@ -31,10 +31,9 @@ class DataRepoImp() : DataRepo {
     private var sharedNotesRef: DatabaseReference? = null
     private var notesListener: ValueEventListener? = null
 
-
     init {
         val database = Firebase.database
-        userId = getUser()?.id ?: ""
+        userId = getUser().id ?: ""
         notesRef = database.getReference("Notes")
         userRef = notesRef?.child(userId)
         sharedNotesRef = database.getReference("shared_notes")
@@ -139,23 +138,34 @@ class DataRepoImp() : DataRepo {
         onSuccess: (List<NoteContent>) -> Unit,
         onFailure: () -> Unit
     ) {
-        notesRef?.child(userId)
-            ?.orderByChild("isShared")
-            ?.equalTo(true)
+        usersRef?.child(userId)
             ?.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(userSnapshot: DataSnapshot) {
+                    val latestUser = userSnapshot.getValue(User::class.java)
 
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val notes = snapshot.children.mapNotNull {
-                        it.getValue(NoteContent::class.java)
-                    }
-                    onSuccess(notes)
+                    notesRef?.child(userId)
+                        ?.orderByChild("isShared")
+                        ?.equalTo(true)
+                        ?.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(notesSnapshot: DataSnapshot) {
+                                val notes = notesSnapshot.children.mapNotNull {
+                                    it.getValue(NoteContent::class.java)?.copy(
+                                        user = latestUser
+                                    )
+                                }
+                                onSuccess(notes)
+                            }
+                            override fun onCancelled(error: DatabaseError) {
+                                onFailure()
+                            }
+                        })
                 }
-
                 override fun onCancelled(error: DatabaseError) {
                     onFailure()
                 }
             })
     }
+
 
     //=====================================================
     override fun getAllSharedNotes(

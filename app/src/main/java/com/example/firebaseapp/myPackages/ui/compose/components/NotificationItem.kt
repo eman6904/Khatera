@@ -1,5 +1,6 @@
 package com.example.firebaseapp.myPackages.ui.compose.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,34 +17,29 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle.Companion.Italic
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.firebaseapp.R
+import com.example.firebaseapp.myPackages.data.local.UserData.Companion.getUser
 import com.example.firebaseapp.myPackages.data.models.NoteContent
 
 @Composable
 fun NotificationItem(note: NoteContent, onItemClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
-            .shadow(
-                elevation = 8.dp,
-                shape = RoundedCornerShape(10.dp),
-                ambientColor = Color.White.copy(alpha = 0.6f),
-                spotColor = Color.White.copy(alpha = 0.6f)
-            )
-    ) {
+
         Card(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(bottom = 10.dp)
                 .clickable { onItemClick() },
             shape = RoundedCornerShape(10.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color.Black
             ),
+            border = BorderStroke(width = 0.5.dp, color = Color(0xFF558B2F)),
             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
         ) {
             Row(
@@ -53,9 +49,12 @@ fun NotificationItem(note: NoteContent, onItemClick: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                ProfileImage(
-                    imageUrl = note.user?.profileImage
-                )
+                if(note.user?.id!=getUser().id){
+                    ProfileImage(
+                        imageUrl = note.user?.profileImage
+                    )
+                }
+
                 Column(
                     modifier = Modifier
                         .weight(1f)
@@ -63,7 +62,9 @@ fun NotificationItem(note: NoteContent, onItemClick: () -> Unit) {
                         .padding(vertical = 10.dp)
                 ) {
                     Text(
-                        text = note.user?.userName ?: "",
+                        text =  if(note.user?.id!=getUser().id) note.user?.userName ?: "" else stringResource(
+                            R.string.you
+                        ),
                         fontSize = 16.sp,
                         fontWeight = Bold,
                         color = Color.White,
@@ -71,7 +72,7 @@ fun NotificationItem(note: NoteContent, onItemClick: () -> Unit) {
                     )
                     Text(
                         text = note.title ?: "",
-                        fontSize = 14.sp,
+                        fontSize = 12.sp,
                         color = Color.White
                     )
                     Text(
@@ -85,5 +86,4 @@ fun NotificationItem(note: NoteContent, onItemClick: () -> Unit) {
                 }
             }
         }
-    }
 }

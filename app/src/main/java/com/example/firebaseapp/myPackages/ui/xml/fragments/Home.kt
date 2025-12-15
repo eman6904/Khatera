@@ -22,6 +22,7 @@ import com.example.firebaseapp.myPackages.data.remote.firebase.database.repoImp.
 import com.example.firebaseapp.myPackages.ui.compose.components.AlertDialog
 import com.example.firebaseapp.myPackages.ui.compose.components.HomeTopBar
 import com.example.firebaseapp.myPackages.ui.compose.components.NoteBottomSheet
+import com.example.firebaseapp.myPackages.ui.compose.components.ProfileBottomSheet
 import com.example.firebaseapp.myPackages.ui.xml.adapters.NoteAdapter
 import com.example.firebaseapp.myPackages.utils.getCurrentDate
 import com.example.firebaseapp.myPackages.utils.showError
@@ -45,15 +46,40 @@ class Home : Fragment(R.layout.home_fragment) {
 
         //## Top Bar----------------------------------------------
         binding.composeTopBar.setContent {
+            var showProfile by remember { mutableStateOf(false) }
+            var profileImage by remember { mutableStateOf(getUser().profileImage) }
+
             HomeTopBar(
+                profileImage = profileImage,
                 onLogoutClick = {
                     FirebaseAuth.getInstance().signOut()
                     navController.navigate(R.id.action_dealingWithNote_to_noteFace)
                 },
                 onNotificationClick = {
                     navController.navigate(R.id.action_dealingWithNote_to_composeHostFragment)
-                }
+                },
+                onProfileClick = {showProfile = true}
             )
+            if(showProfile){
+                ProfileBottomSheet(
+                    onImageChang = {
+                        profileImage = it
+                    },
+                    user = getUser(),
+                    onDismiss = {showProfile = false},
+                    onItemClick = {
+                        val bundle = Bundle().apply {
+                            putString("note", it?.note)
+                            putString("title", it?.title)
+                            putString("noteId", it?.id)
+                        }
+                        navController.navigate(
+                            R.id.action_dealingWithNote_to_displayNote2,
+                            bundle
+                        )
+                    }
+                )
+            }
 
         }
         //## Display Notes-----------------------------------------
