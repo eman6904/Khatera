@@ -12,6 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,9 +34,13 @@ import com.example.firebaseapp.myPackages.ui.compose.components.ProfileImage
 @Composable
 fun NotificationDetails(
     onBack:()->Unit,
-    note: NoteContent? = null
+    clickedNote: NoteContent?
 ){
-    Log.d("FCM",note.toString())
+
+    var note by remember { mutableStateOf<NoteContent?>(null) }
+    LaunchedEffect(Unit) {
+        note = clickedNote
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -56,14 +65,14 @@ fun NotificationDetails(
                     .padding(vertical = 10.dp)
             ) {
                 Text(
-                    text = note?.user?.userName ?: "Eman Nasser",
+                    text = note?.user?.userName ?: "",
                     fontSize = 16.sp,
                     fontWeight = Bold,
                     color = Color.White,
                     modifier = Modifier.padding(bottom = 2.dp)
                 )
                 Text(
-                    text = note?.date ?: "Sunday 12:30 PM",
+                    text = note?.date ?: "",
                     fontSize = 10.sp,
                     fontStyle = Italic,
                     color = Color.White

@@ -22,20 +22,23 @@ fun ComposeNavGraph() {
         composable("NOTIFICATIONS") {
             Notifications(
                 onItemDetailsNav = { note ->
-                    navController.currentBackStackEntry?.arguments?.putParcelable("note", note)
+                    navController.currentBackStackEntry?.savedStateHandle?.set("note", note)
                     navController.navigate("DETAILS")
                 }
             )
         }
 
+        composable("DETAILS") {
+            val note = navController.previousBackStackEntry
+                ?.savedStateHandle
+                ?.get<NoteContent>("note")
 
-        composable("DETAILS") { backStackEntry ->
-            val note = backStackEntry.arguments?.getParcelable<NoteContent>("note")
             NotificationDetails(
-                note = note,
+                clickedNote = note,
                 onBack = { navController.popBackStack() }
             )
         }
     }
 }
+
 
