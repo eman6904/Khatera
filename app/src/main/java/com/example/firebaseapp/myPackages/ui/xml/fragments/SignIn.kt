@@ -42,8 +42,6 @@ class SignIn : Fragment(R.layout.fragment_sign_in) {
           signIn()
         }
 
-        activity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-
         binding.progressBar.setContent {
             LoadingView()
         }
@@ -61,11 +59,7 @@ class SignIn : Fragment(R.layout.fragment_sign_in) {
                     password = binding.password.text.toString(),
                     onSuccess = {
                         binding.progressBar.isVisible = false
-                        var bundle = bundleOf(
-                            "key1" to binding.email.text.toString(),
-                            "key2" to binding.password.text.toString()
-                        )
-                        navController.navigate(R.id.action_signIn_to_dealingWithNote, bundle)
+                        navController.navigate(R.id.action_signIn_to_dealingWithNote)
                     },
                     onFailure = {
                         binding.progressBar.isVisible = false
@@ -97,13 +91,14 @@ class SignIn : Fragment(R.layout.fragment_sign_in) {
         }
     }
 }
+
+
 fun editTextPasswordToggle(editText: EditText) {
     var isPasswordVisible = false
     editText.transformationMethod = PasswordTransformationMethod()
     editText.setCompoundDrawablesWithIntrinsicBounds(
         R.drawable.lock_open, 0, R.drawable.visibility, 0
     )
-
     editText.setOnTouchListener { _, event ->
         if (event.action == MotionEvent.ACTION_UP) {
             val drawableEnd = 2

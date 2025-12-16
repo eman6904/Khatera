@@ -1,6 +1,5 @@
 package com.example.firebaseapp.myPackages.data.remote.firebase.database.repoImp
 
-import android.util.Log
 import com.example.firebaseapp.myPackages.data.local.UserData.Companion.getUser
 import com.example.firebaseapp.myPackages.data.local.UserData.Companion.updateUser
 import com.example.firebaseapp.myPackages.data.models.NoteContent
@@ -17,7 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext

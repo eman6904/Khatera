@@ -30,7 +30,7 @@ class SignUp : Fragment(R.layout.fragment_sign_up) {
         val activity = activity as MainActivity
         activity.supportActionBar?.hide()
 
-        editTextPasswordToggle(binding.password)
+        editTextPasswordToggle(binding.password2)
 
         authRepo = AuthRepoImpl(requireContext())
 
@@ -38,8 +38,6 @@ class SignUp : Fragment(R.layout.fragment_sign_up) {
 
             signUp()
         }
-
-        activity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         binding.progressBar.setContent {
             LoadingView()
@@ -52,12 +50,12 @@ class SignUp : Fragment(R.layout.fragment_sign_up) {
     private fun signUp() {
         if (NoFieldEmpty()) {
             VisibilityHandling(true)
-            binding.register.isVisible = false
+            binding.register.text = ""
             authRepo?.let {
                 it.signUp(
                     User(
-                        email = binding.email.text.toString(),
-                        password = binding.password.text.toString(),
+                        email = binding.email2.text.toString(),
+                        password = binding.password2.text.toString(),
                         userName = binding.userName.text.toString(),
                         joinDate = getCurrentDate()
                     ),
@@ -68,7 +66,7 @@ class SignUp : Fragment(R.layout.fragment_sign_up) {
                     },
                     onFailure = {
                         binding.progressBar.isVisible = false
-                        binding.register.isVisible = true
+                        binding.register.text = getString(R.string.register)
                         Toast.makeText(
                             requireContext(),
                             it, Toast.LENGTH_LONG
@@ -82,8 +80,8 @@ class SignUp : Fragment(R.layout.fragment_sign_up) {
     }
 
     private fun NoFieldEmpty(): Boolean {
-        return (binding.email.text.isNotEmpty() &&
-                binding.password.text.isNotEmpty() &&
+        return (binding.email2.text.isNotEmpty() &&
+                binding.password2.text.isNotEmpty() &&
                 binding.userName.text.isNotEmpty())
     }
 
@@ -96,8 +94,8 @@ class SignUp : Fragment(R.layout.fragment_sign_up) {
             binding.nameRequired.isVisible = false
             binding.progressBar.isVisible = true
         } else {
-            binding.emailrequired.isVisible = binding.email.text.isEmpty()
-            binding.passwordrequired.isVisible = binding.password.text.isEmpty()
+            binding.emailrequired.isVisible = binding.email2.text.isEmpty()
+            binding.passwordrequired.isVisible = binding.password2.text.isEmpty()
             binding.nameRequired.isVisible = binding.userName.text.isEmpty()
         }
     }

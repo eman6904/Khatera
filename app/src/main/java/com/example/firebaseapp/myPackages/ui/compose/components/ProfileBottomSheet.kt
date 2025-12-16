@@ -1,7 +1,5 @@
 package com.example.firebaseapp.myPackages.ui.compose.components
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,12 +27,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.graphics.Color.Companion.Red
-import androidx.compose.ui.modifier.modifierLocalProvider
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle.Companion.Italic
 import androidx.compose.ui.text.font.FontStyle.Companion.Normal
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
@@ -198,6 +193,7 @@ fun ProfileBottomSheet(
                            .fillMaxSize(),
                    ){
                        SharedItemsContent(
+                           userId = user.id,
                            onItemDetailsNav = {onItemClick(it)},
                            sharedItems = {
                                sharedItemsCount = it

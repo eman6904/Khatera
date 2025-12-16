@@ -45,7 +45,8 @@ fun NotificationItem(note: NoteContent, onItemClick: () -> Unit) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(8.dp)
+                    .padding(start = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -80,7 +81,8 @@ fun NotificationItem(note: NoteContent, onItemClick: () -> Unit) {
                         fontSize = 10.sp,
                         fontStyle = Italic,
                         color = Color.White,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(top = 4.dp),
                         textAlign = TextAlign.End
                     )
                 }

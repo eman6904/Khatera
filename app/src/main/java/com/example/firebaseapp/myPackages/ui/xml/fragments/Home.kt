@@ -41,7 +41,6 @@ class Home : Fragment(R.layout.home_fragment) {
     var dataRepo: DataRepo? = null
     var notificationCount: MutableState<Int> = mutableStateOf(0)
     var selectedNote: NoteContent? = null
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = HomeFragmentBinding.bind(view)
@@ -126,50 +125,50 @@ class Home : Fragment(R.layout.home_fragment) {
                 )
             }
             //## Get & Display---------------------------------------
-            dataRepo?.getUserNotes(
-                onSuccess = { notes ->
-                    if (!isAdded) return@getUserNotes
-                    adapter = NoteAdapter(
-                        context = requireContext(),
-                        notes = notes,
-                        onUpdateClick = {
-                            title = it.title?:""
-                            noteContent = it.note?:""
-                            status = getString(R.string.update)
-                            selectedNote = it
-                            writeNote = true
-                        },
-                        onDeleteClick = {
-                            selectedNote = it
-                            showWarning = true
-                        },
-                        onItemClick = {
-                            val bundle = Bundle().apply {
-                                putString("note", it.note)
-                                putString("title", it.title)
-                                putString("noteId", it.id)
+                dataRepo?.getUserNotes(
+                    onSuccess = { notes ->
+                        if (!isAdded) return@getUserNotes
+                        adapter = NoteAdapter(
+                            context = requireContext(),
+                            notes = notes,
+                            onUpdateClick = {
+                                title = it.title ?: ""
+                                noteContent = it.note ?: ""
+                                status = getString(R.string.update)
+                                selectedNote = it
+                                writeNote = true
+                            },
+                            onDeleteClick = {
+                                selectedNote = it
+                                showWarning = true
+                            },
+                            onItemClick = {
+                                val bundle = Bundle().apply {
+                                    putString("note", it.note)
+                                    putString("title", it.title)
+                                    putString("noteId", it.id)
+                                }
+                                navController.navigate(
+                                    R.id.action_dealingWithNote_to_displayNote2,
+                                    bundle
+                                )
+
                             }
-                            navController.navigate(
-                                R.id.action_dealingWithNote_to_displayNote2,
-                                bundle
-                            )
+                        )
+                        binding.listview.adapter = adapter
+                        binding.progressBar.isVisible = false
 
-                        }
-                    )
-                    binding.listview.adapter = adapter
-                    binding.progressBar.isVisible = false
-
-                },
-                onFailure = {
-                    if (!isAdded) return@getUserNotes
-                    binding.progressBar.isVisible = false
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.failed_to_load_notes),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            )
+                    },
+                    onFailure = {
+                        if (!isAdded) return@getUserNotes
+                        binding.progressBar.isVisible = false
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.failed_to_load_notes),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                )
 
             //## Add Note || Update Note--------------------------------
             if (writeNote) {
@@ -249,6 +248,7 @@ class Home : Fragment(R.layout.home_fragment) {
 
     override fun onStart() {
         super.onStart()
+        notificationCount.value = 0
         val scope =  CoroutineScope(Dispatchers.IO + Job())
         dataRepo?.getAllSharedNotes(
             scope = scope,

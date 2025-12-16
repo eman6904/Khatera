@@ -48,7 +48,7 @@
 
     <!-- Email -->
     <EditText
-        android:id="@+id/email"
+        android:id="@+id/email2"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:textSize="@dimen/_12sdp"
@@ -75,7 +75,7 @@
 
     <!-- Password -->
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/password2"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:textSize="@dimen/_12sdp"
