@@ -3,6 +3,8 @@ package com.example.firebaseapp.myPackages.ui.xml.fragments
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +29,9 @@ import com.example.firebaseapp.myPackages.ui.xml.adapters.NoteAdapter
 import com.example.firebaseapp.myPackages.utils.getCurrentDate
 import com.example.firebaseapp.myPackages.utils.showError
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 
 class Home : Fragment(R.layout.home_fragment) {
 
@@ -34,7 +39,7 @@ class Home : Fragment(R.layout.home_fragment) {
     private lateinit var navController: NavController
     lateinit var adapter: NoteAdapter
     var dataRepo: DataRepo? = null
-    var list = ArrayList<NoteContent>()
+    var notificationCount: MutableState<Int> = mutableStateOf(0)
     var selectedNote: NoteContent? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,10 +51,12 @@ class Home : Fragment(R.layout.home_fragment) {
 
         //## Top Bar----------------------------------------------
         binding.composeTopBar.setContent {
+
             var showProfile by remember { mutableStateOf(false) }
             var profileImage by remember { mutableStateOf(getUser().profileImage) }
 
             HomeTopBar(
+                notificationCount = notificationCount.value,
                 profileImage = profileImage,
                 onLogoutClick = {
                     FirebaseAuth.getInstance().signOut()
@@ -240,6 +247,19 @@ class Home : Fragment(R.layout.home_fragment) {
 
     }
 
+    override fun onStart() {
+        super.onStart()
+        val scope =  CoroutineScope(Dispatchers.IO + Job())
+        dataRepo?.getAllSharedNotes(
+            scope = scope,
+            onSuccess = {
+             notificationCount.value = getUser().notificationCount
+            },
+            onFailure = {
+                showError(requireContext())
+            }
+        )
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         dataRepo?.cancelRequest()

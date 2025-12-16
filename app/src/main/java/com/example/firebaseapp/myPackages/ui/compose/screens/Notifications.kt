@@ -62,7 +62,7 @@ fun Notifications(
        modifier = Modifier
            .fillMaxSize()
            .background(Black)
-           .padding( 10.dp)
+           .padding(10.dp)
    ){
        SharedItemsContent(
            onItemDetailsNav = onItemDetailsNav,
@@ -75,7 +75,8 @@ fun Notifications(
                    fontWeight = Bold,
                    fontStyle = Italic,
                    textAlign = TextAlign.Center,
-                   modifier = Modifier.fillMaxWidth()
+                   modifier = Modifier
+                       .fillMaxWidth()
                        .padding(top = 10.dp)
                )
            }
@@ -104,6 +105,15 @@ fun SharedItemsContent(
                 items = it
                 sharedItems(it.size)
                 isLoading = false
+                if(it.size>0) {
+                    dataRepo.updateRemoteUser(
+                        getUser().copy(
+                            lastSeenNote = it[0].timestamp
+                        ),
+                        onSuccess = {},
+                        onFailure = {}
+                    )
+                }
             },
             onFailure = {
                 isLoading = false

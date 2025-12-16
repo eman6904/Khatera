@@ -91,17 +91,8 @@ class DataRepoImp() : DataRepo {
                 }
                 noteRef.child("isShared").setValue(true)
                     .addOnSuccessListener {
-                        updateRemoteUser(
-                            user = getUser().copy(
-                                sharedNotesCount = getUser().sharedNotesCount + 1
-                            ),
-                            onSuccess = {
-                                onSuccess(false)
-                            },
-                            onFailure = {
-                                onFailure()
-                            }
-                        )
+                        onSuccess(false)
+
                     }.addOnFailureListener {
                         onFailure()
                     }
@@ -123,7 +114,7 @@ class DataRepoImp() : DataRepo {
                     val notes = snapshot.children.mapNotNull {
                         it.getValue(NoteContent::class.java)
                     }
-                    onSuccess(notes)
+                    onSuccess(notes.sortedByDescending { it.timestamp })
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -153,7 +144,7 @@ class DataRepoImp() : DataRepo {
                                         user = latestUser
                                     )
                                 }
-                                onSuccess(notes)
+                                onSuccess(notes.sortedByDescending { it.timestamp })
                             }
                             override fun onCancelled(error: DatabaseError) {
                                 onFailure()
@@ -195,7 +186,20 @@ class DataRepoImp() : DataRepo {
                 }
                 val results = deferreds.awaitAll().flatten()
                 withContext(Dispatchers.Main) {
-                    onSuccess(results)
+                    updateRemoteUser(
+                        user = getUser().copy(
+                            notificationCount = getUser().lastSeenNote?.let { lastSeen ->
+                                results.count { it.timestamp > lastSeen }
+                            } ?: results.size
+                            ,
+                        ),
+                        onSuccess = {
+                            onSuccess(results.sortedByDescending { it.timestamp })
+                        },
+                        onFailure = {
+                            onFailure()
+                        }
+                    )
                 }
 
             } catch (e: Exception) {

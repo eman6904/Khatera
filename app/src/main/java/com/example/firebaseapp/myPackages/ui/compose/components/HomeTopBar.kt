@@ -31,7 +31,7 @@ import com.example.firebaseapp.myPackages.data.local.UserData.Companion.getUser
 @Composable
 fun HomeTopBar(
     profileImage:String?,
-    notificationCount: Int = 4,
+    notificationCount: Int = 0,
     onLogoutClick: () -> Unit = {},
     onNotificationClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},

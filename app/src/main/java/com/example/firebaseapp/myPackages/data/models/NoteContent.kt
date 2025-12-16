@@ -10,7 +10,8 @@ data class NoteContent(
     var note: String? = null,
     var date: String? = null,
     var user: User? = null,
-    var isShared: Boolean = false
+    var isShared: Boolean = false,
+    var timestamp: Long =  System.currentTimeMillis()
 ) : Parcelable {
 
     constructor() : this(null)

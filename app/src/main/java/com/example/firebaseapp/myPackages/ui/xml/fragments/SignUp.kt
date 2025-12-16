@@ -14,6 +14,7 @@ import com.example.firebaseapp.myPackages.MainActivity
 import com.example.firebaseapp.myPackages.data.remote.firebase.auth.repo.AuthRepo
 import com.example.firebaseapp.myPackages.data.remote.firebase.auth.repoImp.AuthRepoImpl
 import com.example.firebaseapp.myPackages.data.models.User
+import com.example.firebaseapp.myPackages.ui.compose.components.LoadingView
 import com.example.firebaseapp.myPackages.utils.getCurrentDate
 
 class SignUp : Fragment(R.layout.fragment_sign_up) {
@@ -39,6 +40,10 @@ class SignUp : Fragment(R.layout.fragment_sign_up) {
         }
 
         activity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
+        binding.progressBar.setContent {
+            LoadingView()
+        }
     }
 
     //******************************************************************************
@@ -57,12 +62,12 @@ class SignUp : Fragment(R.layout.fragment_sign_up) {
                         joinDate = getCurrentDate()
                     ),
                     onSuccess = {
-                        binding.progressBarSignup.isVisible = false
+                        binding.progressBar.isVisible = false
                         navController.navigate(R.id.action_signUp_to_signIn)
 
                     },
                     onFailure = {
-                        binding.progressBarSignup.isVisible = false
+                        binding.progressBar.isVisible = false
                         binding.register.isVisible = true
                         Toast.makeText(
                             requireContext(),
@@ -89,7 +94,7 @@ class SignUp : Fragment(R.layout.fragment_sign_up) {
             binding.emailrequired.isVisible = false
             binding.passwordrequired.isVisible = false
             binding.nameRequired.isVisible = false
-            binding.progressBarSignup.isVisible = true
+            binding.progressBar.isVisible = true
         } else {
             binding.emailrequired.isVisible = binding.email.text.isEmpty()
             binding.passwordrequired.isVisible = binding.password.text.isEmpty()

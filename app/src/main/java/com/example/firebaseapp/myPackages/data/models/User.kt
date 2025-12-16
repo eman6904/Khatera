@@ -11,5 +11,6 @@ data class User(
     var password:String? = null,
     var joinDate:String? = null,
     var profileImage:String? = null,
-    var sharedNotesCount : Int = 0
+    var lastSeenNote : Long? = null,
+    var notificationCount :Int = 0
 ): Parcelable

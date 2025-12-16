@@ -44,6 +44,9 @@ class SignIn : Fragment(R.layout.fragment_sign_in) {
 
         activity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
+        binding.progressBar.setContent {
+            LoadingView()
+        }
     }
 
     //***************************************************************************************
@@ -57,7 +60,7 @@ class SignIn : Fragment(R.layout.fragment_sign_in) {
                     email = binding.email.text.toString(),
                     password = binding.password.text.toString(),
                     onSuccess = {
-                        binding.progressBarSignup.isVisible = false
+                        binding.progressBar.isVisible = false
                         var bundle = bundleOf(
                             "key1" to binding.email.text.toString(),
                             "key2" to binding.password.text.toString()
@@ -65,7 +68,7 @@ class SignIn : Fragment(R.layout.fragment_sign_in) {
                         navController.navigate(R.id.action_signIn_to_dealingWithNote, bundle)
                     },
                     onFailure = {
-                        binding.progressBarSignup.isVisible = false
+                        binding.progressBar.isVisible = false
                         binding.login.text = getString(R.string.sign_in)
                         Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
                     }
@@ -87,7 +90,7 @@ class SignIn : Fragment(R.layout.fragment_sign_in) {
         if (ok) {
             binding.emailrequired.isVisible = false
             binding.passwordrequired.isVisible = false
-            binding.progressBarSignup.isVisible = true
+            binding.progressBar.isVisible = true
         } else {
             binding.emailrequired.isVisible = binding.email.text.isEmpty()
             binding.passwordrequired.isVisible = binding.password.text.isEmpty()
