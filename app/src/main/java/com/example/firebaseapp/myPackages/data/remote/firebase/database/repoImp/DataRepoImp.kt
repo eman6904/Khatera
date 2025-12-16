@@ -216,7 +216,7 @@ class DataRepoImp() : DataRepo {
         notesRef?.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val userIds = snapshot.children.mapNotNull { it.key }
-                onSuccess(userIds)
+                onSuccess(userIds.filter { it!=getUser().id })
             }
 
             override fun onCancelled(error: DatabaseError) {
